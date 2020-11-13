@@ -1,0 +1,25 @@
+{
+  "name": "discord-black-jack",
+  "version": "1.0.0",
+  "description": "play cards on discord",
+  "main": "index.js",
+  "scripts": {
+    "run": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dperrymorrow/discord-black-jack.git"
+  },
+  "author": "David Morrow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dperrymorrow/discord-black-jack/issues"
+  },
+  "homepage": "https://github.com/dperrymorrow/discord-black-jack#readme",
+  "dependencies": {
+    "discord.js": "^12.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "trigger": "$",
+  "trigger": "!",
   "appName": "Black Jack Bot",
   "footer": "Thanks for playing!"
 }

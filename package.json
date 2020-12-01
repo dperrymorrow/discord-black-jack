@@ -4,7 +4,8 @@
   "description": "play cards on discord",
   "main": "index.js",
   "scripts": {
-    "run": "nodemon index.js"
+    "start": "nodemon index.js",
+    "build": "node scripts/generate-cards.js"
   },
   "repository": {
     "type": "git",
@@ -17,9 +18,11 @@
   },
   "homepage": "https://github.com/dperrymorrow/discord-black-jack#readme",
   "dependencies": {
-    "discord.js": "^12.4.1"
+    "discord.js": "^12.4.1",
+    "mongoose": "^5.10.14"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "standard": "^16.0.2"
   }
 }

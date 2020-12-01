@@ -1,56 +1,71 @@
 
 const Format = require('./format-msg.js')
 const Settings = require('../config/settings.json')
+const Engine = require('./engine.js')
+const Handlers = require('./handlers.js')
 
 module.exports = {
 
-  route (phrase, author) {
-    if (!phrase.startsWith(Settings.trigger)) return null
+  async route (msg) {
+    if (!msg.content.startsWith(Settings.trigger)) return
+    const params = msg.content.replace(Settings.trigger, '').trim().split(' ')
+    const [command, ...args] = params
 
     const match = Object.values(this.handlers).find(item => {
-      return item.phrases.includes(phrase.replace(/\$\s+/g, '').toLowerCase())
+      return item.phrases.includes(command.toLowerCase())
     })
 
-    return match ? match.handler(author) : this.instructions()
+    if (match) {
+      const eng = await Engine(msg.author.username)
+      await eng.findGame()
+      match.handler(eng, msg, args)
+    } else {
+      this.instructions(msg)
+    }
   },
 
-  instructions () {
-    const msg = Format()
+  instructions (msg) {
+    const res = Format.setup()
       .setTitle('Instructions for playing')
 
     Object.values(this.handlers).forEach(handler => {
-      msg.addField(`${Settings.trigger} ${handler.phrases[0]}`, handler.description, true)
+      res.addField(`${Settings.trigger} ${handler.phrases[0]}`, handler.description)
     })
 
-    return msg
+    return msg.channel.send(res)
   },
 
   handlers: {
     newGame: {
-      phrases: ['new game', 'lets play'],
+      phrases: ['play'],
       description: 'Start a new game of Black Jack',
-      handler (author) {
-        const msg = Format()
-        return msg.setTitle(`ok, ${author.username} lets play a new game`)
-      }
+      handler: Handlers.newGame
     },
 
-    hit: {
-      phrases: ['hit me', 'give me another', 'hit'],
-      description: 'Get another card',
-      handler (author) {
-        const msg = Format()
-        return msg.setTitle(`ok ${author.username} here is your card`)
-      }
+    balance: {
+      phrases: ['balance'],
+      description: 'View your credits balance',
+      handler: Handlers.balance
     },
 
     quit: {
-      phrases: ['quit', 'i quit'],
-      description: 'Quite playing this hand',
-      handler (author) {
-        const msg = Format()
-        return msg.setTitle(`sorry ${author.username}, were you not having fun?`)
-      }
+      phrases: ['quit', 'leave'],
+      description: 'Quit current game',
+      handler: Handlers.quit
+
+    },
+
+    done: {
+      phrases: ['stay', 'done'],
+      description: 'I have all the cards I need',
+      handler: Handlers.done
+    },
+
+    hit: {
+      phrases: ['hit', 'hit me', 'hit'],
+      description: 'Get another card',
+      handler: Handlers.hit
     }
+
   }
 }
